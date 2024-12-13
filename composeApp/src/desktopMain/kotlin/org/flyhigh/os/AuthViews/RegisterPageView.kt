@@ -1,20 +1,16 @@
 package org.example.project.AuthViews
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.onClick
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import kotlinx.coroutines.flow.MutableStateFlow
-import network.chaintech.kmp_date_time_picker.ui.datepicker.WheelDatePickerView
-import network.chaintech.kmp_date_time_picker.utils.*
+import org.flyhigh.os.AuthViews.CursorDropDownMenu
+import org.flyhigh.os.AuthViews.DefaultRowView
+import org.flyhigh.os.AuthViews.TextFieldBoxes
+import org.flyhigh.os.AuthViews.WheelDatePickerBottomSheet
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -24,7 +20,7 @@ fun RegisterView(vm: TextFieldViewModel) {
 
     Column(modifier = Modifier
         .padding(20.dp)
-        .fillMaxSize(),
+        .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
@@ -86,98 +82,45 @@ fun RegisterView(vm: TextFieldViewModel) {
                     showCitizenshipDropDown = !showCitizenshipDropDown
                 }
         ) {
+            CursorDropDownMenu(vm)
+
             TextFieldBoxes(
-                text = vm.citizenship,
-                title = "Citizenship",
-                action = {  },
-                readOnly = true,
+                text = vm.country,
+                title = "Country",
+                action = { str -> vm.updateCountry(str) }
+            )
+        }
+
+        DefaultRowView {
+            TextFieldBoxes(
+                text = vm.state,
+                title = "State",
+                action = { str -> vm.updateState(str) }
+            )
+
+            TextFieldBoxes(
+                text = vm.city,
+                title = "City",
+                action = { str -> vm.updateCity(str) }
+            )
+        }
+
+        DefaultRowView {
+            TextFieldBoxes(
+                text = vm.address,
+                title = "Address",
+                action = { str -> vm.updateAddress(str) }
+            )
+
+            TextFieldBoxes(
+                text = vm.address2,
+                title = "Second Address(Optional)",
+                action = { str -> vm.updateAddress2(str) }
             )
         }
     }
 }
 
-
-
-@Composable
-fun DefaultRowView(modifier: Modifier = Modifier,view: @Composable () -> Unit) {
-    Row(modifier = modifier
-        .padding(10.dp)
-        .fillMaxWidth()
-        ,
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceAround) {
-        view()
-    }
-}
-
-
-
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-fun WheelDatePickerBottomSheet(vm: TextFieldViewModel) {
-    var showDatePicker by remember { mutableStateOf(false) }
-    var selectedDate by remember { mutableStateOf("") }
-
-    if (showDatePicker) {
-        WheelDatePickerView(
-            modifier = Modifier
-                .widthIn(min = 300.dp, max = 500.dp)
-                .padding(top = 22.dp, bottom = 26.dp),
-            showDatePicker = showDatePicker,
-            title = "Birth of Date",
-            doneLabel = "Select",
-            titleStyle = androidx.compose.ui.text.TextStyle(
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFF333333),
-            ),
-            doneLabelStyle = androidx.compose.ui.text.TextStyle(
-                fontSize = 16.sp,
-                fontWeight = FontWeight(600),
-                color = Color(0xFF007AFF),
-            ),
-            dateTextColor = Color(0xff007AFF),
-            selectorProperties = WheelPickerDefaults.selectorProperties(
-                borderColor = Color.LightGray,
-            ),
-            rowCount = 5,
-            height = 180.dp,
-            dateTextStyle = androidx.compose.ui.text.TextStyle(
-                fontWeight = FontWeight(600),
-            ),
-
-            shape = RoundedCornerShape(18.dp),
-            dateTimePickerView = DateTimePickerView.DIALOG_VIEW,
-            onDoneClick = {
-                selectedDate = it.toString()
-                vm.updateDateOfBirth(date = it.toString())
-                showDatePicker = false
-            },
-            onDateChangeListener = {
-                selectedDate = it.toString()
-                vm.updateDateOfBirth(date = it.toString())
-            },
-//            onDismiss = {
-//                showDatePicker = false
-//            }
-        )
-    }
-
-    Row(
-        modifier = Modifier
-            .onClick {
-                showDatePicker = true
-            }
-            .background(color = Color.Transparent)
-    ) {
-        TextFieldBoxes(
-            text = vm.dateOfBirth,
-            title = "Date of birth",
-            action = {},
-            readOnly = true
-        )
-    }
-}
 
 
 

@@ -25,6 +25,8 @@ kotlin {
             implementation("com.composables:core:1.20.0")
 
             implementation("network.chaintech:kmp-date-time-picker:1.0.5")
+
+            implementation("org.jetbrains.androidx.navigation:navigation-compose:2.7.0-alpha07")
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)

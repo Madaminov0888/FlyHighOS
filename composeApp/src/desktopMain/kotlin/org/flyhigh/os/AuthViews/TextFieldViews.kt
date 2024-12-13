@@ -18,20 +18,38 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.datetime.LocalDate
+import org.flyhigh.os.Components.PrimaryButton
 import java.util.*
 
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun TextFieldViews(vm: TextFieldViewModel = TextFieldViewModel()) {
+fun TextFieldViews(vm: TextFieldViewModel = TextFieldViewModel(), navController: NavController) {
     MaterialTheme {
         var registered by remember { mutableStateOf(true) }
 
         val padding by animateDpAsState(
             targetValue = if (registered) 40.dp else 220.dp,
             animationSpec = tween(500)
+        )
+
+        val buttonBackgroundColor by animateColorAsState(
+            targetValue = if (registered) Color.Black else Color.Transparent, animationSpec = tween(delayMillis = 0)
+        )
+
+        val buttonTextColor by animateColorAsState(
+            targetValue = if (registered) Color.White else Color.Black, animationSpec = tween(delayMillis = 0)
+        )
+
+        val buttonBackgroundColor2 by animateColorAsState(
+            targetValue = if (!registered) Color.Black else Color.Transparent, animationSpec = tween(delayMillis = 0)
+        )
+
+        val buttonTextColor2 by animateColorAsState(
+            targetValue = if (!registered) Color.White else Color.Black, animationSpec = tween(delayMillis = 0)
         )
 
         LazyColumn(
@@ -53,62 +71,24 @@ fun TextFieldViews(vm: TextFieldViewModel = TextFieldViewModel()) {
                     .background(Color.Transparent)
                     ,
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center) {
+                    horizontalArrangement = Arrangement.Center
+                ) {
 
-                    val buttonBackgroundColor by animateColorAsState(
-                        targetValue = if (registered) Color.Black else Color.Transparent, animationSpec = tween(delayMillis = 0)
-                    )
+                    PrimaryButton(text = "Register", backgroundColor = buttonBackgroundColor, textColor = buttonTextColor,onClick = {
+                        registered = !registered
+                    })
 
-                    val buttonTextColor by animateColorAsState(
-                        targetValue = if (registered) Color.White else Color.Black, animationSpec = tween(delayMillis = 0)
-                    )
-
-                    val buttonBackgroundColor2 by animateColorAsState(
-                        targetValue = if (!registered) Color.Black else Color.Transparent, animationSpec = tween(delayMillis = 0)
-                    )
-
-                    val buttonTextColor2 by animateColorAsState(
-                        targetValue = if (!registered) Color.White else Color.Black, animationSpec = tween(delayMillis = 0)
-                    )
-
-                    Text("Register",
-                        modifier = Modifier
-                            .padding(10.dp)
-                            .clip(RoundedCornerShape(10.dp))
-                            .background(color = buttonBackgroundColor)
-                            .padding(10.dp)
-                            .onClick {
-                                registered = !registered
-                                     }
-                        ,
-                        color = buttonTextColor,
-                        fontSize = 25.sp,
-                        fontWeight = FontWeight.SemiBold,
-                    )
-
-                    Text("Login",
-                        modifier = Modifier
-                            .padding(10.dp)
-                            .clip(RoundedCornerShape(10.dp))
-                            .background(color = buttonBackgroundColor2)
-                            .padding(10.dp)
-                            .onClick {
-                                registered = !registered
-                            }
-                        ,
-                        color = buttonTextColor2,
-                        fontSize = 25.sp,
-                        fontWeight = FontWeight.SemiBold,
-                    )
-
+                    PrimaryButton(text = "Login", backgroundColor = buttonBackgroundColor2, textColor = buttonTextColor2, onClick = {
+                        registered = !registered
+                    })
                 }
             }
 
             item {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                     AnimatedVisibility(
                         visible = registered,
-                        enter = fadeIn(animationSpec = tween(500)) + slideInHorizontally(),
+                        enter = fadeIn(animationSpec = tween(500)),
                         exit = fadeOut(animationSpec = tween(500)) + scaleOut()
                     ) {
                         RegisterView(vm)
@@ -116,40 +96,27 @@ fun TextFieldViews(vm: TextFieldViewModel = TextFieldViewModel()) {
 
                     AnimatedVisibility(
                         visible = !registered,
-                        enter = fadeIn(animationSpec = tween(500)) + slideInHorizontally(),
+                        enter = fadeIn(animationSpec = tween(500)),
                         exit = fadeOut(animationSpec = tween(500)) + scaleOut()
                     ) {
                         LoginPageView(vm)
                     }
                 }
             }
+
+            item {
+                PrimaryButton(
+                    text = if (registered) "Register" else "Login",
+                    backgroundColor = Color.Black,
+                    textColor = Color.White,
+                    disabled = if (registered) vm.canRegister.value else vm.canLogin.value,
+                    onClick = {
+                        navController.navigate(route = "home")
+                })
+            }
         }
     }
 }
 
 
-
-
-@Composable
-fun TextFieldBoxes(text: StateFlow<String>, title: String, action: (txt: String)->Unit, readOnly: Boolean = false) {
-    MaterialTheme {
-        val textValue by text.collectAsState()
-
-        TextField(value = textValue, onValueChange = {newText -> action(newText)}, label = {
-            Text(title)
-        }, modifier = Modifier
-            .padding()
-            .widthIn(400.dp, 450.dp)
-            ,
-            colors = TextFieldDefaults.textFieldColors(
-                focusedLabelColor = Color.Black,
-                focusedIndicatorColor = Color.Black,
-                backgroundColor = Color.White
-            ),
-            singleLine = true,
-            readOnly = readOnly,
-            enabled = !readOnly
-        )
-    }
-}
 

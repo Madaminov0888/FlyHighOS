@@ -11,6 +11,18 @@ import java.util.Date
 
 class TextFieldViewModel {
 
+    var citizenships: Array<String> = emptyArray()
+
+    init {
+        getListOfCitizenships()
+    }
+
+    private val _canLogin = MutableStateFlow(false)
+    val canLogin: StateFlow<Boolean> get() = _canLogin
+
+    private val _canRegister = MutableStateFlow(false)
+    val canRegister: StateFlow<Boolean> get() = _canRegister
+
     //login
     private val _loginEmail = MutableStateFlow("")
     val loginEmail: StateFlow<String> get() = _loginEmail
@@ -47,6 +59,9 @@ class TextFieldViewModel {
     private val _citizenship = MutableStateFlow("")
     val citizenship: StateFlow<String> get() = _citizenship
 
+    private val _country = MutableStateFlow("")
+    val country: StateFlow<String> get() = _country
+
     private val _city = MutableStateFlow("")
     val city: StateFlow<String> get() = _city
 
@@ -71,8 +86,24 @@ class TextFieldViewModel {
     fun updateForeignPassId(text: String) { _foreignPassId.value = text }
     fun updateIdCard(text: String) { _idCard.value = text }
     fun updateCitizenship(text: String) { _citizenship.value = text }
+    fun updateCountry(text: String) { _country.value = text}
     fun updateCity(text: String) { _city.value = text }
     fun updateState(text: String) { _state.value = text }
     fun updateAddress(text: String) { _address.value = text }
     fun updateAddress2(text: String) { _address2.value = text }
+
+
+
+    //TODO network functions
+
+    fun getListOfCitizenships() {
+        citizenships = citizenships.plus("Uzbekistan")
+            .plus("Russia")
+            .plus("UK")
+            .plus("USA")
+            .plus("China")
+            .plus("Germany")
+            .plus("France")
+            .plus("Spain")
+    }
 }

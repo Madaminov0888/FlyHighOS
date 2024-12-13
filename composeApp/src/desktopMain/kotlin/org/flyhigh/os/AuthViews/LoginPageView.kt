@@ -5,10 +5,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import org.flyhigh.os.AuthViews.TextFieldBoxes
 
 @Composable
 fun LoginPageView(vm: TextFieldViewModel) {
-    Column(modifier = Modifier.fillMaxHeight().padding(20.dp),
+    Column(modifier = Modifier.padding(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(space = 40.dp),
         ) {
