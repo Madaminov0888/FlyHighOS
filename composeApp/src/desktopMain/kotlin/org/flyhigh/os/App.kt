@@ -15,23 +15,15 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 import flyhigh.composeapp.generated.resources.Res
 import flyhigh.composeapp.generated.resources.compose_multiplatform
+import org.example.project.AuthViews.TextFieldViewModel
+import org.example.project.AuthViews.TextFieldViews
 
 @Composable
 @Preview
 fun App() {
     MaterialTheme {
-        var showContent by remember { mutableStateOf(false) }
-        Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-            Button(onClick = { showContent = !showContent }) {
-                Text("Click me!")
-            }
-            AnimatedVisibility(showContent) {
-                val greeting = remember { Greeting().greet() }
-                Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                    Image(painterResource(Res.drawable.compose_multiplatform), null)
-                    Text("Compose: $greeting")
-                }
-            }
-        }
+        var vm = TextFieldViewModel()
+
+        TextFieldViews(vm)
     }
 }
