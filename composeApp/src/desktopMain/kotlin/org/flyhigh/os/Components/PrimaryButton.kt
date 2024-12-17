@@ -23,13 +23,13 @@ import androidx.compose.ui.unit.sp
 fun PrimaryButton(text: String, backgroundColor: Color, textColor: Color, disabled: Boolean = false, onClick: () -> Unit) {
     Surface(
         modifier = Modifier.wrapContentSize(),
-        color = if (disabled) MaterialTheme.colors.background else Color.Transparent,
+        color = Color.Transparent
     ) {
         Text(text,
             modifier = Modifier
                 .padding(10.dp)
                 .clip(RoundedCornerShape(10.dp))
-                .background(color = backgroundColor)
+                .background(color = if (disabled) Color.DarkGray else backgroundColor)
                 .padding(10.dp)
                 .onClick {
                     if (!disabled) {

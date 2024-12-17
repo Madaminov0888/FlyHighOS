@@ -30,6 +30,8 @@ import java.util.*
 fun TextFieldViews(vm: TextFieldViewModel = TextFieldViewModel(), navController: NavController) {
     MaterialTheme {
         var registered by remember { mutableStateOf(true) }
+        val canRegister = vm.canRegister.collectAsState().value
+        val canLogin = vm.canLogin.collectAsState().value
 
         val padding by animateDpAsState(
             targetValue = if (registered) 40.dp else 220.dp,
@@ -105,14 +107,25 @@ fun TextFieldViews(vm: TextFieldViewModel = TextFieldViewModel(), navController:
             }
 
             item {
-                PrimaryButton(
-                    text = if (registered) "Register" else "Login",
-                    backgroundColor = Color.Black,
-                    textColor = Color.White,
-                    disabled = if (registered) vm.canRegister.value else vm.canLogin.value,
-                    onClick = {
-                        navController.navigate(route = "home")
-                })
+                if (registered) {
+                    PrimaryButton(
+                        text = "Register",
+                        backgroundColor = Color.Black,
+                        textColor = Color.White,
+                        disabled = !canRegister,
+                        onClick = {
+                            navController.navigate(route = "home")
+                        })
+                } else {
+                    PrimaryButton(
+                        text = "Login",
+                        backgroundColor = Color.Black,
+                        textColor = Color.White,
+                        disabled = !canLogin,
+                        onClick = {
+                            navController.navigate(route = "home")
+                        })
+                }
             }
         }
     }

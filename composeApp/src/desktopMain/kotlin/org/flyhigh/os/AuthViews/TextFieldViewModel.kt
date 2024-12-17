@@ -75,22 +75,70 @@ class TextFieldViewModel {
     val address2: StateFlow<String> get() = _address2
 
     // Update methods for each field
-    fun updateLoginEmail(text: String) { _loginEmail.value = text}
-    fun updateLoginPassword(text: String) { _loginPassword.value = text}
-    fun updateFirstName(text: String) { _firstName.value = text }
-    fun updateLastName(text: String) { _lastName.value = text }
-    fun updateEmail(text: String) { _email.value = text }
-    fun updatePassword(text: String) { _password.value = text }
-    fun updatePhoneNumber(text: String) { _phoneNumber.value = text }
-    fun updateDateOfBirth(date: String) { _dateOfBirth.value = date }
-    fun updateForeignPassId(text: String) { _foreignPassId.value = text }
-    fun updateIdCard(text: String) { _idCard.value = text }
-    fun updateCitizenship(text: String) { _citizenship.value = text }
-    fun updateCountry(text: String) { _country.value = text}
-    fun updateCity(text: String) { _city.value = text }
-    fun updateState(text: String) { _state.value = text }
-    fun updateAddress(text: String) { _address.value = text }
-    fun updateAddress2(text: String) { _address2.value = text }
+    fun updateLoginEmail(text: String) {
+        _loginEmail.value = text
+        checkLogin()
+    }
+    fun updateLoginPassword(text: String) {
+        _loginPassword.value = text
+        checkLogin()
+    }
+    fun updateFirstName(text: String) {
+        _firstName.value = text
+        checkRegister()
+    }
+    fun updateLastName(text: String) {
+        _lastName.value = text
+        checkRegister()
+    }
+    fun updateEmail(text: String) {
+        _email.value = text
+        checkRegister()
+    }
+    fun updatePassword(text: String) {
+        _password.value = text
+        checkRegister()
+    }
+    fun updatePhoneNumber(text: String) {
+        _phoneNumber.value = text
+        checkRegister()
+    }
+    fun updateDateOfBirth(date: String) {
+        _dateOfBirth.value = date
+        checkRegister()
+    }
+    fun updateForeignPassId(text: String) {
+        _foreignPassId.value = text
+        checkRegister()
+    }
+    fun updateIdCard(text: String) {
+        _idCard.value = text
+        checkRegister()
+    }
+    fun updateCitizenship(text: String) {
+        _citizenship.value = text
+        checkRegister()
+    }
+    fun updateCountry(text: String) {
+        _country.value = text
+        checkRegister()
+    }
+    fun updateCity(text: String) {
+        _city.value = text
+        checkRegister()
+    }
+    fun updateState(text: String) {
+        _state.value = text
+        checkRegister()
+    }
+    fun updateAddress(text: String) {
+        _address.value = text
+        checkRegister()
+    }
+    fun updateAddress2(text: String) {
+        _address2.value = text
+        checkRegister()
+    }
 
 
 
@@ -105,5 +153,33 @@ class TextFieldViewModel {
             .plus("Germany")
             .plus("France")
             .plus("Spain")
+    }
+
+    fun checkLogin() {
+        if (!loginEmail.value.isEmpty() and !loginPassword.value.isEmpty()) {
+            _canLogin.value = true
+        }
+    }
+
+    fun checkRegister() {
+        print("checking")
+        if (
+            !firstName.value.isEmpty() and
+            !lastName.value.isEmpty() and
+            !email.value.isEmpty() and
+            !password.value.isEmpty() and
+            !phoneNumber.value.isEmpty() and
+            !foreignPassId.value.isEmpty() and
+            !idCard.value.isEmpty() and
+            !citizenship.value.isEmpty() and
+            !country.value.isEmpty() and
+            !city.value.isEmpty() and
+            !state.value.isEmpty() and
+            !address.value.isEmpty() and
+            !address2.value.isEmpty()
+        ) {
+            print("check complete")
+            _canRegister.value = true
+        }
     }
 }
