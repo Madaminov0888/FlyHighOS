@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.isSecondaryPressed
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -67,7 +68,7 @@ fun CursorDropDownMenu(vm: TextFieldViewModel) {
 
 
 @Composable
-fun TextFieldBoxes(text: StateFlow<String>, title: String, action: (txt: String)->Unit, readOnly: Boolean = false) {
+fun TextFieldBoxes(text: StateFlow<String>, title: String, action: (txt: String)->Unit, readOnly: Boolean = false, widthMin: Dp = 400.dp, widthMax: Dp = 450.dp) {
     MaterialTheme {
         val textValue by text.collectAsState()
 
@@ -75,7 +76,7 @@ fun TextFieldBoxes(text: StateFlow<String>, title: String, action: (txt: String)
             Text(title)
         }, modifier = Modifier
             .padding()
-            .widthIn(400.dp, 450.dp)
+            .widthIn(widthMin, widthMax)
             ,
             colors = TextFieldDefaults.textFieldColors(
                 focusedLabelColor = Color.Black,
@@ -110,7 +111,10 @@ fun DefaultRowView(modifier: Modifier = Modifier,view: @Composable () -> Unit) {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun WheelDatePickerBottomSheet(vm: TextFieldViewModel) {
+fun WheelDatePickerBottomSheet(
+    onDateSelected: (String) -> Unit,
+    view: @Composable () -> Unit
+) {
     var showDatePicker by remember { mutableStateOf(false) }
     var selectedDate by remember { mutableStateOf("") }
 
@@ -141,21 +145,17 @@ fun WheelDatePickerBottomSheet(vm: TextFieldViewModel) {
             dateTextStyle = TextStyle(
                 fontWeight = FontWeight(600),
             ),
-
             shape = RoundedCornerShape(18.dp),
             dateTimePickerView = DateTimePickerView.DIALOG_VIEW,
             onDoneClick = {
                 selectedDate = it.toString()
-                vm.updateDateOfBirth(date = it.toString())
+                onDateSelected(it.toString())
                 showDatePicker = false
             },
             onDateChangeListener = {
                 selectedDate = it.toString()
-                vm.updateDateOfBirth(date = it.toString())
+                onDateSelected(it.toString())
             },
-//            onDismiss = {
-//                showDatePicker = false
-//            }
         )
     }
 
@@ -166,11 +166,6 @@ fun WheelDatePickerBottomSheet(vm: TextFieldViewModel) {
             }
             .background(color = Color.Transparent)
     ) {
-        TextFieldBoxes(
-            text = vm.dateOfBirth,
-            title = "Date of birth",
-            action = {},
-            readOnly = true
-        )
+        view()
     }
 }

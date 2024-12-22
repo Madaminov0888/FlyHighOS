@@ -1,11 +1,13 @@
 package org.example.project.AuthViews
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.onClick
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import org.flyhigh.os.AuthViews.CursorDropDownMenu
 import org.flyhigh.os.AuthViews.DefaultRowView
@@ -59,7 +61,16 @@ fun RegisterView(vm: TextFieldViewModel) {
                 action = {str -> vm.updatePhoneNumber(str)}
             )
 
-            WheelDatePickerBottomSheet(vm)
+            WheelDatePickerBottomSheet(onDateSelected = { date ->
+                vm.updateDateOfBirth(date = date)
+            }, view = {
+                TextFieldBoxes(
+                    text = vm.dateOfBirth,
+                    title = "Date of birth",
+                    action = {},
+                    readOnly = true
+                )
+            })
         }
 
         DefaultRowView {
