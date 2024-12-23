@@ -7,5 +7,6 @@ class CSColors {
     companion object {
         // Define static-like colors as companion object properties
         val backgroundColor = Color(222f / 255f, 224f / 255f, 224f / 255f) // Gray color from logo background
+        val skyBlue = Color(61f / 255f, 127f / 255f, 235f / 255f)
     }
 }

@@ -20,15 +20,25 @@ import flyhigh.composeapp.generated.resources.Res
 import flyhigh.composeapp.generated.resources.compose_multiplatform
 import org.example.project.AuthViews.TextFieldViewModel
 import org.example.project.AuthViews.TextFieldViews
+import org.flyhigh.os.AdminPanel.AdminAuthView
+import org.flyhigh.os.AdminPanel.AdminAuthViewModel
+import org.flyhigh.os.AdminPanel.AdminHomeView
+import org.flyhigh.os.AdminPanel.AdminHomeViewModel
+import org.flyhigh.os.Main.FlightsView.FlightsView
 import org.flyhigh.os.Main.HomeView
 import org.flyhigh.os.Main.HomeViewModel
+import org.flyhigh.os.RepresentativePanel.Auth.RepresentativeAuthView
+import org.flyhigh.os.RepresentativePanel.Auth.RepresentativeAuthViewModel
+import org.flyhigh.os.RepresentativePanel.Main.RepresentativeHomeView
 
 @Composable
 @Preview
 fun App() {
     MaterialTheme {
-        var authVM = TextFieldViewModel()
-        var homeVM = HomeViewModel()
+        val authVM = TextFieldViewModel()
+        val homeVM = HomeViewModel()
+        val adminAuthVM = AdminAuthViewModel()
+        val adminHomeVM = AdminHomeViewModel()
         val navController = rememberNavController()
 
         NavHost(navController, startDestination = "auth") {
@@ -38,6 +48,26 @@ fun App() {
 
             composable(route = "home") {
                 HomeView(homeVM, navController)
+            }
+
+            composable(route = "adminAuth") {
+                AdminAuthView(adminAuthVM, navController)
+            }
+
+            composable(route = "adminHome") {
+                AdminHomeView(adminHomeVM)
+            }
+
+            composable(route = "representativeAuth") {
+                RepresentativeAuthView(navController)
+            }
+
+            composable(route = "representativeHome") {
+                RepresentativeHomeView(navController)
+            }
+
+            composable(route = "getFlights") {
+                FlightsView(navController)
             }
         }
     }

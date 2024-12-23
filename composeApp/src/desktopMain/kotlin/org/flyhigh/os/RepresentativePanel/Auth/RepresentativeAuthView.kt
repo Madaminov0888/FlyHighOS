@@ -1,4 +1,4 @@
-package org.example.project.AuthViews
+package org.flyhigh.os.RepresentativePanel.Auth
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.animateDpAsState
@@ -9,29 +9,27 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.onClick
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.datetime.LocalDate
+import org.flyhigh.os.Components.BackButton
 import org.flyhigh.os.Components.PrimaryButton
-import java.security.AllPermission
-import java.util.*
-
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun TextFieldViews(vm: TextFieldViewModel = TextFieldViewModel(), navController: NavController) {
+fun RepresentativeAuthView(navController: NavController) {
+    val vm = RepresentativeAuthViewModel()
+
     MaterialTheme {
-        var registered by remember { mutableStateOf(false) }
+        var registered by remember { mutableStateOf(true) }
         val canRegister = vm.canRegister.collectAsState().value
         val canLogin = vm.canLogin.collectAsState().value
 
@@ -59,16 +57,11 @@ fun TextFieldViews(vm: TextFieldViewModel = TextFieldViewModel(), navController:
         Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Top) {
 
             Row(horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
-                Text("Log in as Admin", fontWeight = FontWeight.SemiBold, fontSize = 18.sp,
-                    modifier = Modifier
-                        .onClick {
-                            navController.navigate(route = "adminAuth")
-                        }
-                )
+                BackButton(navController)
 
-                Text("Log in as Representative",  fontWeight = FontWeight.SemiBold, fontSize = 18.sp,modifier = Modifier
+                Text("Log in as Admin",  fontWeight = FontWeight.SemiBold, fontSize = 18.sp,modifier = Modifier
                     .onClick {
-                        navController.navigate(route = "representativeAuth")
+                        navController.navigate(route = "adminAuth")
                     })
             }
 
@@ -112,7 +105,7 @@ fun TextFieldViews(vm: TextFieldViewModel = TextFieldViewModel(), navController:
                             enter = fadeIn(animationSpec = tween(500)),
                             exit = fadeOut(animationSpec = tween(500)) + scaleOut()
                         ) {
-                            RegisterView(vm)
+                            RepresentativeRegisterPage(vm)
                         }
 
                         this@Column.AnimatedVisibility(
@@ -120,7 +113,7 @@ fun TextFieldViews(vm: TextFieldViewModel = TextFieldViewModel(), navController:
                             enter = fadeIn(animationSpec = tween(500)),
                             exit = fadeOut(animationSpec = tween(500)) + scaleOut()
                         ) {
-                            LoginPageView(vm)
+                            RepresentativeLoginPage(vm)
                         }
                     }
                 }
@@ -133,7 +126,7 @@ fun TextFieldViews(vm: TextFieldViewModel = TextFieldViewModel(), navController:
                             textColor = Color.White,
                             disabled = !canRegister,
                             onClick = {
-                                navController.navigate(route = "home")
+                                registered = !registered
                             })
                     } else {
                         PrimaryButton(
@@ -142,7 +135,7 @@ fun TextFieldViews(vm: TextFieldViewModel = TextFieldViewModel(), navController:
                             textColor = Color.White,
                             disabled = !canLogin,
                             onClick = {
-                                navController.navigate(route = "home")
+                                navController.navigate(route = "representativeHome")
                             })
                     }
                 }
@@ -150,6 +143,3 @@ fun TextFieldViews(vm: TextFieldViewModel = TextFieldViewModel(), navController:
         }
     }
 }
-
-
-

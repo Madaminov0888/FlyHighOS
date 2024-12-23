@@ -4,6 +4,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import javax.swing.plaf.nimbus.State
 
 class HomeViewModel {
 
@@ -19,11 +20,20 @@ class HomeViewModel {
     private val _returnDate = MutableStateFlow(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
     val returnDate: StateFlow<String> get() = _returnDate
 
-    private val _adultNumber = MutableStateFlow("")
-    val adultNumber: StateFlow<String> get() = _adultNumber
+    private val _adultNumber = MutableStateFlow(1)
+    val adultNumber: StateFlow<Int> get() = _adultNumber
 
-    private val _childrenNumber = MutableStateFlow("")
-    val childrenNumber: StateFlow<String> get() = _childrenNumber
+    private val _childrenNumber = MutableStateFlow(0)
+    val childrenNumber: StateFlow<Int> get() = _childrenNumber
+
+    private val _infantsNumber = MutableStateFlow(0)
+    val infantsNumber: StateFlow<Int> get() = _infantsNumber
+
+    private val _flightClass = MutableStateFlow("Economy")
+    val flightClass: StateFlow<String> get() =  _flightClass
+
+
+    val flightClasses: Array<String> = arrayOf("Economy", "Comfort", "Business", "First")
 
 
     //Functions
@@ -31,7 +41,13 @@ class HomeViewModel {
     fun updateFromCity(text: String) { _fromCity.value = text}
     fun updateFlightDate(date: String) { _flightDate.value = date }
     fun updateReturnDate(date: String) { _returnDate.value = date }
-    fun updateChildrenNumber(text: String) { _childrenNumber.value = text }
-    fun updateAdultNumber(text: String) { _adultNumber.value = text }
+    fun updateChildrenNumber(num: Int) { _childrenNumber.value = num }
+    fun updateAdultNumber(num: Int) { _adultNumber.value = num }
+    fun updateInfantsNumber(num: Int) { _infantsNumber.value = num }
+    fun updateFlightClass(text: String) { _flightClass.value = text}
+
+    fun getPassengersNumber():Int {
+        return _adultNumber.value + _childrenNumber.value + _infantsNumber.value
+    }
 
 }

@@ -4,11 +4,14 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.content.MediaType.Companion.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role.Companion.Image
@@ -16,10 +19,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.navArgument
 import org.flyhigh.os.AuthViews.DefaultRowView
 import org.flyhigh.os.AuthViews.TextFieldBoxes
 import org.flyhigh.os.AuthViews.WheelDatePickerBottomSheet
 import org.flyhigh.os.Components.CSColors
+import org.flyhigh.os.Components.PrimaryButton
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
@@ -46,7 +51,7 @@ fun HomeView(vm: HomeViewModel, navController: NavController) {
 
             }
 
-            SearchFieldView(vm)
+            SearchFieldView(vm, navController)
         }
     }
 }
@@ -54,8 +59,14 @@ fun HomeView(vm: HomeViewModel, navController: NavController) {
 
 
 @Composable
-fun SearchFieldView(vm: HomeViewModel) {
-    DefaultRowView {
+fun SearchFieldView(vm: HomeViewModel, navController: NavController) {
+    DefaultRowView(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 10.dp)
+            .clip(RoundedCornerShape(size = 15.dp))
+            .background(color = Color.LightGray)
+    ) {
         TextFieldBoxes(
             text = vm.fromCity,
             title = "From",
@@ -86,7 +97,10 @@ fun SearchFieldView(vm: HomeViewModel) {
                 widthMax = 250.dp, action = {}, readOnly = true)
         })
 
+        PassengersDropDownMenu(vm)
 
-
+        PrimaryButton(text = "Search", textColor = Color.White, backgroundColor = Color.Black, onClick = {
+            navController.navigate(route = "getFlights")
+        })
     }
 }
