@@ -23,7 +23,8 @@ import network.chaintech.kmp_date_time_picker.ui.datepicker.WheelDatePickerView
 import network.chaintech.kmp_date_time_picker.utils.DateTimePickerView
 import network.chaintech.kmp_date_time_picker.utils.WheelPickerDefaults
 import org.example.project.AuthViews.TextFieldViewModel
-
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -106,17 +107,18 @@ fun DefaultRowView(modifier: Modifier = Modifier,view: @Composable () -> Unit) {
         view()
     }
 }
-
-
-
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun WheelDatePickerBottomSheet(
     onDateSelected: (String) -> Unit,
+    onlyFutureDates: Boolean = false, // Determines if only future dates are allowed
     view: @Composable () -> Unit
 ) {
     var showDatePicker by remember { mutableStateOf(false) }
     var selectedDate by remember { mutableStateOf("") }
+
+    // Formatter to parse and format date strings
+    val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
     if (showDatePicker) {
         WheelDatePickerView(
@@ -124,7 +126,7 @@ fun WheelDatePickerBottomSheet(
                 .widthIn(min = 300.dp, max = 500.dp)
                 .padding(top = 22.dp, bottom = 26.dp),
             showDatePicker = showDatePicker,
-            title = "Birth of Date",
+            title = "Select a Date",
             doneLabel = "Select",
             titleStyle = TextStyle(
                 fontSize = 18.sp,
@@ -147,14 +149,40 @@ fun WheelDatePickerBottomSheet(
             ),
             shape = RoundedCornerShape(18.dp),
             dateTimePickerView = DateTimePickerView.DIALOG_VIEW,
-            onDoneClick = {
-                selectedDate = it.toString()
-                onDateSelected(it.toString())
-                showDatePicker = false
+            onDoneClick = { date ->
+                // Parse the selected date
+                val selectedLocalDate = LocalDate.parse(date.toString(), dateFormatter)
+                val today = LocalDate.now()
+
+                // Check if the date is valid based on the `onlyFutureDates` flag
+                val isValidDate = if (onlyFutureDates) {
+                    !selectedLocalDate.isBefore(today) // Future or today
+                } else {
+                    !selectedLocalDate.isAfter(today) // Past or today
+                }
+
+                if (isValidDate) {
+                    selectedDate = selectedLocalDate.toString()
+                    onDateSelected(selectedLocalDate.toString())
+                    showDatePicker = false
+                } else {
+                    // Handle invalid date selection if necessary
+                }
             },
-            onDateChangeListener = {
-                selectedDate = it.toString()
-                onDateSelected(it.toString())
+            onDateChangeListener = { date ->
+                val selectedLocalDate = LocalDate.parse(date.toString(), dateFormatter)
+                val today = LocalDate.now()
+
+                val isValidDate = if (onlyFutureDates) {
+                    !selectedLocalDate.isBefore(today)
+                } else {
+                    !selectedLocalDate.isAfter(today)
+                }
+
+                if (isValidDate) {
+                    selectedDate = selectedLocalDate.toString()
+                    onDateSelected(selectedLocalDate.toString())
+                }
             },
         )
     }

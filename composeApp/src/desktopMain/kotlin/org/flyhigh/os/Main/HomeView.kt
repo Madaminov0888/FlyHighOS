@@ -2,6 +2,8 @@ package org.flyhigh.os.Main
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.content.MediaType.Companion.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -42,6 +44,8 @@ fun HomeView(vm: HomeViewModel, navController: NavController) {
                     verticalArrangement = Arrangement.Top,
                     horizontalAlignment = Alignment.CenterHorizontally)
                 {
+                    NavBar(vm, navController)
+
                     Image(modifier = Modifier.fillMaxSize(0.5f),painter = painterResource(resourcePath = "logo.png"), contentDescription = "logo", contentScale = ContentScale.Fit)
 
                     Text("Fly High", fontSize = 76.sp, fontWeight = FontWeight.Bold)
@@ -65,6 +69,7 @@ fun SearchFieldView(vm: HomeViewModel, navController: NavController) {
             .fillMaxWidth()
             .padding(horizontal = 10.dp)
             .clip(RoundedCornerShape(size = 15.dp))
+            .border(width = 2.dp, color = Color.Black, shape = RoundedCornerShape(15.dp))
             .background(color = Color.LightGray)
     ) {
         TextFieldBoxes(
@@ -85,14 +90,14 @@ fun SearchFieldView(vm: HomeViewModel, navController: NavController) {
 
         WheelDatePickerBottomSheet(onDateSelected = { date ->
             vm.updateFlightDate(date)
-        }, view = {
+        }, onlyFutureDates = true ,view = {
             TextFieldBoxes(text = vm.flightDate, title = "Departure", widthMin = 200.dp,
                 widthMax = 250.dp, action = {}, readOnly = true)
         })
 
         WheelDatePickerBottomSheet(onDateSelected = { date ->
             vm.updateReturnDate(date)
-        }, view = {
+        }, onlyFutureDates = true ,view = {
             TextFieldBoxes(text = vm.returnDate, title = "Return", widthMin = 200.dp,
                 widthMax = 250.dp, action = {}, readOnly = true)
         })
@@ -102,5 +107,55 @@ fun SearchFieldView(vm: HomeViewModel, navController: NavController) {
         PrimaryButton(text = "Search", textColor = Color.White, backgroundColor = Color.Black, onClick = {
             navController.navigate(route = "getFlights")
         })
+    }
+}
+
+
+@Composable
+fun NavBar(vm: HomeViewModel, navController: NavController) {
+    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+        Text("Return Tickets",
+            modifier = Modifier
+                .padding(horizontal = 15.dp)
+                .clickable {
+
+                }
+            ,
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Medium
+        )
+
+        Text("Past Orders",
+            modifier = Modifier
+                .padding(horizontal = 15.dp)
+                .clickable {
+
+                }
+            ,
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Medium
+        )
+
+        Text("Future Orders",
+            modifier = Modifier
+                .padding(horizontal = 15.dp)
+                .clickable {
+
+                }
+            ,
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Medium
+        )
+
+        Text("Profile",
+            modifier = Modifier
+                .padding(horizontal = 15.dp)
+                .clickable {
+                    navController.navigate(route = "profilePage")
+                }
+            ,
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Medium
+        )
     }
 }

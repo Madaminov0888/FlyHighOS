@@ -27,6 +27,9 @@ import org.flyhigh.os.AdminPanel.AdminHomeViewModel
 import org.flyhigh.os.Main.FlightsView.FlightsView
 import org.flyhigh.os.Main.HomeView
 import org.flyhigh.os.Main.HomeViewModel
+import org.flyhigh.os.Main.ProfilePage.ProfilePageView
+import org.flyhigh.os.Main.ProfilePage.ProfileViewModel
+import org.flyhigh.os.Managers.NetworkManager
 import org.flyhigh.os.RepresentativePanel.Auth.RepresentativeAuthView
 import org.flyhigh.os.RepresentativePanel.Auth.RepresentativeAuthViewModel
 import org.flyhigh.os.RepresentativePanel.Main.RepresentativeHomeView
@@ -39,7 +42,14 @@ fun App() {
         val homeVM = HomeViewModel()
         val adminAuthVM = AdminAuthViewModel()
         val adminHomeVM = AdminHomeViewModel()
+        val profileVM = ProfileViewModel()
+
         val navController = rememberNavController()
+
+        LaunchedEffect(Unit) {
+            NetworkManager.getInstance().startConnection()
+
+        }
 
         NavHost(navController, startDestination = "auth") {
             composable(route = "auth") {
@@ -67,7 +77,11 @@ fun App() {
             }
 
             composable(route = "getFlights") {
-                FlightsView(navController)
+                FlightsView(navController, homeVM)
+            }
+
+            composable(route = "profilePage") {
+                ProfilePageView(profileVM, navController)
             }
         }
     }
