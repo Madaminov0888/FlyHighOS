@@ -68,6 +68,7 @@ fun SearchFieldView(vm: HomeViewModel, navController: NavController) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 10.dp)
+            .padding(start = 25.dp)
             .clip(RoundedCornerShape(size = 15.dp))
             .border(width = 2.dp, color = Color.Black, shape = RoundedCornerShape(15.dp))
             .background(color = Color.LightGray)
@@ -114,17 +115,6 @@ fun SearchFieldView(vm: HomeViewModel, navController: NavController) {
 @Composable
 fun NavBar(vm: HomeViewModel, navController: NavController) {
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-        Text("Return Tickets",
-            modifier = Modifier
-                .padding(horizontal = 15.dp)
-                .clickable {
-
-                }
-            ,
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Medium
-        )
-
         Text("Past Orders",
             modifier = Modifier
                 .padding(horizontal = 15.dp)
