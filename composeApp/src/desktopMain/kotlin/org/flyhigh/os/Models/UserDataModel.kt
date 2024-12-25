@@ -1,6 +1,7 @@
 package org.flyhigh.os.Models
 
 import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.Serializable
 
 data class User(
     @SerializedName("user_id") val userId: String,
@@ -19,4 +20,10 @@ data class User(
     @SerializedName("address_line_1") val addressLine1: String,
     @SerializedName("address_line_2") val addressLine2: String?,
     @SerializedName("user_state") val userState: String
+)
+
+@Serializable
+data class LoginUser(
+    val email: String,
+    val password: String
 )

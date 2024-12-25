@@ -4,19 +4,33 @@ package org.example.project.AuthViews
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.datetime.DateTimePeriod
+
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Date
 
+import org.flyhigh.os.Managers.NetworkManager
+
+import org.flyhigh.os.Models.*
+
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.encodeToString
+
+import kotlinx.coroutines.*
+
+import kotlinx.serialization.Serializable
 
 class TextFieldViewModel {
+
+
+    private val scope = CoroutineScope(Dispatchers.Default + Job())
 
     var citizenships: Array<String> = emptyArray()
 
     init {
         getListOfCitizenships()
     }
-
+    private val networkManager = NetworkManager.getInstance()
     private val _canLogin = MutableStateFlow(false)
     val canLogin: StateFlow<Boolean> get() = _canLogin
 
@@ -140,8 +154,6 @@ class TextFieldViewModel {
         checkRegister()
     }
 
-
-
     //TODO network functions
 
     fun getListOfCitizenships() {
@@ -155,11 +167,20 @@ class TextFieldViewModel {
             .plus("Spain")
     }
 
+//    @Serializable
+//    data class LoginUser(val email: String, val password: String)
+//
     fun checkLogin() {
         if (!loginEmail.value.isEmpty() and !loginPassword.value.isEmpty()) {
             _canLogin.value = true
         }
     }
+//
+//    fun attemptLogin() {
+//        val loginData = LoginUser(loginEmail.value, loginPassword.value)
+//        val json = Json.encodeToString(loginData)
+//        println(json)  // This will only print when login is attempted
+//    }
 
     fun checkRegister() {
         print("checking")
@@ -181,5 +202,18 @@ class TextFieldViewModel {
             print("check complete")
             _canRegister.value = true
         }
+    }
+
+
+
+
+    // TODO network
+
+
+    suspend fun login(){
+        val loginData = LoginUser(_loginEmail.value, _loginPassword.value)
+        val json = Json.encodeToString(loginData)
+        networkManager.sendMessage(json)
+
     }
 }

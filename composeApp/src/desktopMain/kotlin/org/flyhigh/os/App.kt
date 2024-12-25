@@ -18,6 +18,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 import flyhigh.composeapp.generated.resources.Res
 import flyhigh.composeapp.generated.resources.compose_multiplatform
+import kotlinx.coroutines.delay
 import org.example.project.AuthViews.TextFieldViewModel
 import org.example.project.AuthViews.TextFieldViews
 import org.flyhigh.os.AdminPanel.AdminAuthView
@@ -49,6 +50,13 @@ fun App() {
         LaunchedEffect(Unit) {
             NetworkManager.getInstance().startConnection()
 
+            val networkManager = NetworkManager.getInstance()
+            networkManager.startConnection()
+
+        }
+
+        LaunchedEffect(Unit) {
+            println("app started")
         }
 
         NavHost(navController, startDestination = "auth") {

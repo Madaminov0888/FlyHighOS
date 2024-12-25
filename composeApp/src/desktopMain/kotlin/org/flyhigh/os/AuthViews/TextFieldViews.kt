@@ -20,16 +20,23 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.datetime.LocalDate
 import org.flyhigh.os.Components.PrimaryButton
 import java.security.AllPermission
 import java.util.*
 
+import kotlinx.coroutines.*
+
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TextFieldViews(vm: TextFieldViewModel = TextFieldViewModel(), navController: NavController) {
+
+    val scope = CoroutineScope(Dispatchers.Default + Job())
+
     MaterialTheme {
         var registered by remember { mutableStateOf(false) }
         val canRegister = vm.canRegister.collectAsState().value
@@ -142,7 +149,17 @@ fun TextFieldViews(vm: TextFieldViewModel = TextFieldViewModel(), navController:
                             textColor = Color.White,
                             disabled = !canLogin,
                             onClick = {
-                                navController.navigate(route = "home")
+                                scope.launch {
+                                    try {
+                                        vm.login() // Assume vm.login() sends the JSON to the server and gets the result
+                                        withContext(Dispatchers.Main) {
+                                            navController.navigate(route = "home")
+                                        }
+                                    } catch (e: Exception) {
+                                        // Handle exceptions, such as network errors
+                                        println("Error during login: ${e.message}")
+                                    }
+                                }
                             })
                     }
                 }

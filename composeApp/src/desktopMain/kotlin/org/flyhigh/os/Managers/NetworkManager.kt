@@ -114,6 +114,9 @@ class NetworkManager private constructor() {
             throw e
         }
     }
+
+
+
     private fun cleanup() {
         try {
             writer?.close()
