@@ -30,7 +30,6 @@ class TextFieldViewModel {
     init {
         getListOfCitizenships()
     }
-    private val networkManager = NetworkManager.getInstance()
     private val _canLogin = MutableStateFlow(false)
     val canLogin: StateFlow<Boolean> get() = _canLogin
 
@@ -167,9 +166,6 @@ class TextFieldViewModel {
             .plus("Spain")
     }
 
-//    @Serializable
-//    data class LoginUser(val email: String, val password: String)
-//
     fun checkLogin() {
         if (!loginEmail.value.isEmpty() and !loginPassword.value.isEmpty()) {
             _canLogin.value = true
@@ -209,11 +205,29 @@ class TextFieldViewModel {
 
     // TODO network
 
+//    suspend fun login(networkManager: NetworkManager){
+//        val loginData = LoginUser(_loginEmail.value, _loginPassword.value)
+//        val json = Json.encodeToString(loginData)
+//        networkManager.sendMessage(json)
+//    }
 
-    suspend fun login(){
-        val loginData = LoginUser(_loginEmail.value, _loginPassword.value)
-        val json = Json.encodeToString(loginData)
-        networkManager.sendMessage(json)
+    // fun login
+    suspend fun loginUser() {
+        val email = _loginEmail.value
+        val password = _loginPassword.value
 
+        // Serialize login data to JSON
+        val loginData = LoginData(email, password)
+        val jsonBody = Json.encodeToString(loginData)
+
+        // Send the JSON data through the socket
+        val networkManager = NetworkManager.getInstance()
+        networkManager.sendMessage(jsonBody)
+
+        // Read the response from the socket
+        println(networkManager.readMessage() ?: "No response from server")
     }
+
+
+
 }

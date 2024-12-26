@@ -29,11 +29,12 @@ import java.security.AllPermission
 import java.util.*
 
 import kotlinx.coroutines.*
+import org.flyhigh.os.Managers.NetworkManager
 
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun TextFieldViews(vm: TextFieldViewModel = TextFieldViewModel(), navController: NavController) {
+fun TextFieldViews(vm: TextFieldViewModel = TextFieldViewModel(), navController: NavController, networkManager: NetworkManager) {
 
     val scope = CoroutineScope(Dispatchers.Default + Job())
 
@@ -150,17 +151,13 @@ fun TextFieldViews(vm: TextFieldViewModel = TextFieldViewModel(), navController:
                             disabled = !canLogin,
                             onClick = {
                                 scope.launch {
-                                    try {
-                                        vm.login() // Assume vm.login() sends the JSON to the server and gets the result
-                                        withContext(Dispatchers.Main) {
-                                            navController.navigate(route = "home")
-                                        }
-                                    } catch (e: Exception) {
-                                        // Handle exceptions, such as network errors
-                                        println("Error during login: ${e.message}")
-                                    }
+                                    val response = vm.loginUser()
+                                    // Handle the response as needed
+                                    // After handling response, navigate to home
+                                    navController.navigate(route = "home")
                                 }
-                            })
+                            }
+                        )
                     }
                 }
             }

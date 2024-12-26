@@ -23,7 +23,7 @@ data class User(
 )
 
 @Serializable
-data class LoginUser(
+data class LoginData(
     val email: String,
     val password: String
 )

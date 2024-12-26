@@ -1,7 +1,5 @@
 package org.flyhigh.os.Managers
 
-// NetworkManager.kt
-
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import java.io.BufferedReader
@@ -9,136 +7,148 @@ import java.io.InputStreamReader
 import java.io.PrintWriter
 import java.net.Socket
 import java.util.concurrent.atomic.AtomicBoolean
+import kotlinx.serialization.json.Json
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.serialization.encodeToString
+
+//class NetworkManager private constructor() {
+//    private var socket: Socket? = null
+//    private var writer: PrintWriter? = null
+//    private var reader: BufferedReader? = null
+//    private val isConnected = AtomicBoolean(false)
+//    private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+//
+//    private val _connectionState = MutableStateFlow<ConnectionState>(ConnectionState.Disconnected)
+//    val connectionState: StateFlow<ConnectionState> = _connectionState
+//
+//    private val _receivedMessages = MutableSharedFlow<String>()
+//    val receivedMessages: SharedFlow<String> = _receivedMessages
+//
+//    companion object {
+//        private const val HOST = "192.168.17.200"
+//        private const val PORT = 65432
+//
+//        @Volatile
+//        private var instance: NetworkManager? = null
+//
+//        fun getInstance(): NetworkManager {
+//            return instance ?: synchronized(this) {
+//                instance ?: NetworkManager().also { instance = it }
+//            }
+//        }
+//    }
+//
+//    fun connect() {
+//        try {
+//            socket = Socket(HOST, PORT)
+//            writer = PrintWriter(socket!!.getOutputStream(), true)
+//            reader = BufferedReader(InputStreamReader(socket!!.getInputStream()))
+//            isConnected.set(true)
+//            _connectionState.value = ConnectionState.Connected
+//        } catch (e: Exception) {
+//            _connectionState.value = ConnectionState.Error(e.message ?: "Unknown error")
+//            cleanup()
+//        }
+//    }
+//
+//    suspend fun sendMessage(message: String): String = withContext(Dispatchers.IO) {
+//        try {
+//            if (!isConnected.get()) throw IllegalStateException("Not connected to server")
+//
+//            // Send the message to the server
+//            writer?.println(message)
+//
+//            // Immediately wait for the response
+//            val response = reader?.readLine() ?: throw Exception("No response from server")
+//            println("Received response: $response") // Debug print
+//            return@withContext response
+//        } catch (e: Exception) {
+//            _connectionState.value = ConnectionState.Error(e.message ?: "Unknown error")
+//            throw e
+//        }
+//    }
+//
+//    private fun cleanup() {
+//        writer?.close()
+//        reader?.close()
+//        socket?.close()
+//        isConnected.set(false)
+//        _connectionState.value = ConnectionState.Disconnected
+//    }
+//
+//    fun disconnect() {
+//        cleanup()
+//        scope.cancel()
+//    }
+//}
+//
+//sealed class ConnectionState {
+//    object Connected : ConnectionState()
+//    object Disconnected : ConnectionState()
+//    data class Error(val message: String) : ConnectionState()
+//}
+
+
+import kotlinx.coroutines.*
+import java.io.*
+import java.net.*
 
 class NetworkManager private constructor() {
-    private var socket: Socket? = null
-    private var writer: PrintWriter? = null
-    private var reader: BufferedReader? = null
-    private val isConnected = AtomicBoolean(false)
-    private var connectionJob: Job? = null
-    private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
-    private val _connectionState = MutableStateFlow<ConnectionState>(ConnectionState.Disconnected)
-    val connectionState: StateFlow<ConnectionState> = _connectionState
+    private var socket: Socket? = null
+    private var input: BufferedReader? = null
+    private var output: PrintWriter? = null
 
     companion object {
-        private const val HOST = "localhost"
-        private const val PORT = 8192
-        private const val RECONNECT_DELAY = 5000L // 5 seconds
+        var ip: String = "192.168.17.200"
+        var port: Int = 8101
 
         @Volatile
-        private var instance: NetworkManager? = null
+        private var INSTANCE: NetworkManager? = null
 
         fun getInstance(): NetworkManager {
-            return instance ?: synchronized(this) {
-                instance ?: NetworkManager().also { instance = it }
+            return INSTANCE ?: synchronized(this) {
+                INSTANCE ?: NetworkManager().also { INSTANCE = it }
             }
         }
     }
 
-    fun startConnection() {
-        if (connectionJob?.isActive == true) return
-
-        connectionJob = scope.launch {
-            while (isActive) {
-                try {
-                    if (!isConnected.get()) {
-                        _connectionState.value = ConnectionState.Connecting
-                        socket = Socket(HOST, PORT)
-                        writer = PrintWriter(socket!!.getOutputStream(), true)
-                        reader = BufferedReader(InputStreamReader(socket!!.getInputStream()))
-                        isConnected.set(true)
-                        _connectionState.value = ConnectionState.Connected
-
-                        // Start heartbeat
-                        startHeartbeat()
-                    }
-                    // Keep the connection alive
-                    print("Connected")
-                    maintainConnection()
-                } catch (e: Exception) {
-                    _connectionState.value = ConnectionState.Error(e.message ?: "Unknown error")
-                    isConnected.set(false)
-                    cleanup()
-                    delay(RECONNECT_DELAY)
-                }
-            }
-        }
-    }
-
-    private suspend fun maintainConnection() {
+    suspend fun connect() = withContext(Dispatchers.IO) {
         try {
-            while (isConnected.get() && socket?.isConnected == true) {
-                // Wait for any incoming messages
-                reader?.readLine()?.let { message ->
-                    handleIncomingMessage(message)
-                }
-            }
+            socket = Socket(ip, port)
+            input = BufferedReader(InputStreamReader(socket!!.getInputStream()))
+            output = PrintWriter(socket!!.getOutputStream(), true)
+            println("Connected to $ip:$port")
         } catch (e: Exception) {
-            throw e
+            println("Connection failed: ${e.message}")
         }
     }
 
-    private fun startHeartbeat() {
-        scope.launch {
-            while (isConnected.get()) {
-                try {
-                    sendMessage("HEARTBEAT")
-                    delay(30000) // 30 seconds
-                } catch (e: Exception) {
-                    break
-                }
-            }
-        }
-    }
-
-    private fun handleIncomingMessage(message: String) {
-        // Handle different types of messages
-        when {
-            message.startsWith("HEARTBEAT_ACK") -> { /* Handle heartbeat */ }
-            message.startsWith("SERVER_MESSAGE") -> { /* Handle server messages */ }
-            // Add more message handlers as needed
-        }
-    }
-
-    suspend fun sendMessage(message: String): String = withContext(Dispatchers.IO) {
+    suspend fun sendMessage(message: String) = withContext(Dispatchers.IO) {
         try {
-            if (!isConnected.get()) {
-                throw IllegalStateException("Not connected to server")
-            }
-
-            writer?.println(message)
-            return@withContext reader?.readLine() ?: throw Exception("No response from server")
+            output?.println(message)
         } catch (e: Exception) {
-            _connectionState.value = ConnectionState.Error(e.message ?: "Unknown error")
-            throw e
+            println("Error sending message: ${e.message}")
         }
     }
 
+    suspend fun readMessage(): String? = withContext(Dispatchers.IO) {
+        println("Reading message")
+        return@withContext try {
+            input?.readLine()
+        } catch (e: IOException) {
+            println("Error reading message: ${e.message}")
+            null
+        }
+    }
 
-
-    private fun cleanup() {
+    fun close() {
         try {
-            writer?.close()
-            reader?.close()
             socket?.close()
+            println("Connection closed")
         } catch (e: Exception) {
-            println("Cleanup error: ${e.message}")
+            println("Error closing connection: ${e.message}")
         }
     }
-
-    fun disconnect() {
-        connectionJob?.cancel()
-        cleanup()
-        isConnected.set(false)
-        _connectionState.value = ConnectionState.Disconnected
-        scope.cancel()
-    }
-}
-
-sealed class ConnectionState {
-    object Connected : ConnectionState()
-    object Connecting : ConnectionState()
-    object Disconnected : ConnectionState()
-    data class Error(val message: String) : ConnectionState()
 }

@@ -43,16 +43,13 @@ fun App() {
         val homeVM = HomeViewModel()
         val adminAuthVM = AdminAuthViewModel()
         val adminHomeVM = AdminHomeViewModel()
+        val networkManager = NetworkManager.getInstance()
         val profileVM = ProfileViewModel()
 
         val navController = rememberNavController()
 
         LaunchedEffect(Unit) {
-            NetworkManager.getInstance().startConnection()
-
-            val networkManager = NetworkManager.getInstance()
-            networkManager.startConnection()
-
+            networkManager.connect()
         }
 
         LaunchedEffect(Unit) {
@@ -61,7 +58,7 @@ fun App() {
 
         NavHost(navController, startDestination = "auth") {
             composable(route = "auth") {
-                TextFieldViews(authVM, navController)
+                TextFieldViews(authVM, navController, networkManager)
             }
 
             composable(route = "home") {
