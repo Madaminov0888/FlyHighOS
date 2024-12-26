@@ -33,6 +33,8 @@ kotlin {
             implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1") // Or the latest version
 
             implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+
+            implementation("io.ktor:ktor-client-core:2.3.4")
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)

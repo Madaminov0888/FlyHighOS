@@ -3,10 +3,8 @@ package org.example.project.AuthViews
 
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
+import kotlinx.serialization.Serializable
 import org.flyhigh.os.Managers.NetworkManager
-import org.flyhigh.os.Models.LoginUser
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -189,16 +187,12 @@ class TextFieldViewModel {
 
 
 
-
-
-
-
-    //NETWORK functions
-    suspend fun login(){
-        val loginData = LoginUser(_loginEmail.value, _loginPassword.value)
-        val json = Json.encodeToString(loginData)
-        networkManager.sendMessage(json)
-    }
-
-
 }
+
+
+
+@Serializable
+data class UserLogin(
+    val login: String,
+    val password: String
+)

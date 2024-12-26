@@ -4,7 +4,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.content.MediaType.Companion.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
@@ -16,18 +15,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.semantics.Role.Companion.Image
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.navArgument
 import org.flyhigh.os.AuthViews.DefaultRowView
 import org.flyhigh.os.AuthViews.TextFieldBoxes
 import org.flyhigh.os.AuthViews.WheelDatePickerBottomSheet
 import org.flyhigh.os.Components.CSColors
 import org.flyhigh.os.Components.PrimaryButton
-import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun HomeView(vm: HomeViewModel, navController: NavController) {
@@ -126,7 +122,7 @@ fun NavBar(vm: HomeViewModel, navController: NavController) {
             fontWeight = FontWeight.Medium
         )
 
-        Text("Future Orders",
+        Text("Active Orders",
             modifier = Modifier
                 .padding(horizontal = 15.dp)
                 .clickable {

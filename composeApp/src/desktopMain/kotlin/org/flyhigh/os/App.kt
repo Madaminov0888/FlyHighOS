@@ -45,12 +45,12 @@ fun App() {
         val navController = rememberNavController()
 
         LaunchedEffect(Unit) {
-            networkManager.startConnection()
+            networkManager.connect()
         }
 
         NavHost(navController, startDestination = "auth") {
             composable(route = "auth") {
-                TextFieldViews(authVM, navController)
+                TextFieldViews(authVM, navController, networkManager)
             }
 
             composable(route = "home") {

@@ -20,15 +20,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.*
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import org.flyhigh.os.Components.PrimaryButton
+import org.flyhigh.os.Managers.NetworkManager
 
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun TextFieldViews(vm: TextFieldViewModel = TextFieldViewModel(), navController: NavController) {
+fun TextFieldViews(vm: TextFieldViewModel = TextFieldViewModel(), navController: NavController, networkManager: NetworkManager) {
     MaterialTheme {
         var registered by remember { mutableStateOf(false) }
         val canRegister = vm.canRegister.collectAsState().value
@@ -142,18 +143,37 @@ fun TextFieldViews(vm: TextFieldViewModel = TextFieldViewModel(), navController:
                             textColor = Color.White,
                             disabled = !canLogin,
                             onClick = {
-//                                scope.launch {
-//                                    try {
-//                                        vm.login() // Assume vm.login() sends the JSON to the server and gets the result
-//                                        withContext(Dispatchers.Main) {
-//                                            navController.navigate(route = "home")
-//                                        }
-//                                    } catch (e: Exception) {
-//                                        // Handle exceptions, such as network errors
-//                                        println("Error during login: ${e.message}")
-//                                    }
-//                                }
-                                navController.navigate(route = "home")
+                                scope.launch {
+                                    try {
+                                        val loginData = UserLogin(login = vm.loginEmail.value, password = vm.loginPassword.value)
+                                        val loginJson = Json.encodeToString(loginData)
+
+                                        networkManager.sendMessage(loginJson)
+                                        var response: String? = null
+                                        var retryCount = 0
+
+                                        while (response == null && retryCount < 3) {
+                                            response = networkManager.readMessage()
+                                            if (response == null) {
+                                                networkManager.close()
+                                                networkManager.connect()
+                                                networkManager.sendMessage(loginJson) // Resend login data
+                                                retryCount++
+                                                delay(1000)
+                                            }
+                                        }
+
+                                        if (response?.contains("success") == true) {
+                                            withContext(Dispatchers.Main) {
+                                                navController.navigate(route = "home")
+                                            }
+                                        } else {
+                                            println("Login failed: $response")
+                                        }
+                                    } catch (e: Exception) {
+                                        println("Error during login: ${e.message}")
+                                    }
+                                }
                             }
                         )
                     }
@@ -162,6 +182,88 @@ fun TextFieldViews(vm: TextFieldViewModel = TextFieldViewModel(), navController:
         }
     }
 }
+//
+//
+//import kotlinx.coroutines.*
+//import kotlinx.io.core.*
+//import kotlinx.io.errors.IOException
+//import io.ktor.network.sockets.*
+//import io.ktor.network.selector.*
+//import io.ktor.utils.io.*
+//import io.ktor.utils.io.core.*
+//import java.net.Socket
+//
+//class NetworkManager {
+//
+//    private val port = 8101
+//    private val serverAddress = "192.168.17.200"
+//    private var socket: Socket? = null
+//    private var readChannel: ByteReadChannel? = null
+//    private var writeChannel: ByteWriteChannel? = null
+//
+//    suspend fun connect() {
+//        val selectorManager = SelectorManager(Dispatchers.IO)
+//        try {
+//            println("CREATING CLIENT SOCKET .....")
+//            socket = aSocket(selectorManager).tcp().connect(serverAddress, port)
+//            println("CONNECTED TO SERVER AT $serverAddress:$port")
+//
+//            socket?.let {
+//                readChannel = it.openReadChannel()
+//                writeChannel = it.openWriteChannel(autoFlush = true)
+//
+//                println("Hello message sent")
+//                sendMessage("Hello from client")
+//                println("Ready for Chat....")
+//                startChat()
+//            }
+//        } catch (e: IOException) {
+//            println("Connection failed: ${e.localizedMessage}")
+//        }
+//    }
+//
+//    private suspend fun startChat() = coroutineScope {
+//        val inputJob = launch {
+//            while (isActive) {
+//                print("CLIENT: ")
+//                val message = readLine() ?: continue
+//                sendMessage(message)
+//                if (message.trim() == "bye") {
+//                    println("Closing connection.")
+//                    this@coroutineScope.cancel()
+//                }
+//            }
+//        }
+//
+//        val outputJob = launch {
+//            try {
+//                while (isActive) {
+//                    val serverResponse = readChannel?.readUTF8Line() ?: break
+//                    println("SERVER: $serverResponse")
+//                }
+//            } catch (e: IOException) {
+//                println("Error reading server response: ${e.localizedMessage}")
+//            }
+//        }
+//
+//        joinAll(inputJob, outputJob)
+//    }
+//
+//    private suspend fun sendMessage(message: String) {
+//        try {
+//            writeChannel?.writeFully(message.toByteArray(Charsets.UTF_8))
+//            writeChannel?.flush()
+//        } catch (e: IOException) {
+//            println("Error sending message: ${e.localizedMessage}")
+//        }
+//    }
+//
+//    suspend fun disconnect() {
+//        socket?.close()
+//        println("Disconnected from server.")
+//    }
+//}
+
 
 
 
