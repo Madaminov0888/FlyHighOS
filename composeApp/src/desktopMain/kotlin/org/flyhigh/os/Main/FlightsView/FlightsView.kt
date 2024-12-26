@@ -17,18 +17,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import org.flyhigh.os.Components.BackButton
 import org.flyhigh.os.Components.CSColors
+import org.flyhigh.os.Main.Extensions
 import org.flyhigh.os.Main.HomeViewModel
 import org.flyhigh.os.Main.SearchFieldView
-import androidx.compose.ui.graphics.Color
-import org.flyhigh.os.Components.BackButton
-import org.flyhigh.os.Main.Extensions
-import org.flyhigh.os.Models.FlightData
 import org.flyhigh.os.Models.FlightCombination
+import org.flyhigh.os.Models.FlightData
 
 @Composable
 fun FlightsView(navController: NavController, vm: HomeViewModel) {
@@ -81,7 +83,7 @@ fun FlightsListView(vm: HomeViewModel, navController: NavController) {
 
         item {
             for (flightCombination in flightCombinations) {
-                FlightCombinationView(flightCombination, vm)
+                FlightCombinationView(flightCombination, vm, navController)
             }
         }
     }
@@ -130,8 +132,10 @@ fun FilterView(vm: HomeViewModel) {
 @Composable
 fun FlightCombinationView(
     flightCombination: FlightCombination,
-    vm: HomeViewModel
+    vm: HomeViewModel,
+    navController: NavController,
 ) {
+
     Row(
         modifier = Modifier
             .padding(8.dp)
@@ -185,7 +189,8 @@ fun FlightCombinationView(
                 fontSize = 16.sp,
                 fontWeight = FontWeight.SemiBold,
                 modifier = Modifier.clickable {
-                    // Action here
+                    val flightJson = Json.encodeToString(flightCombination)
+                    navController.navigate(route = "detailsView/$flightJson")
                 }
             )
         }

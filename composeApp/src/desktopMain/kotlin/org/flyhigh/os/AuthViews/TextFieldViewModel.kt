@@ -3,15 +3,19 @@ package org.example.project.AuthViews
 
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.datetime.DateTimePeriod
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import org.flyhigh.os.Managers.NetworkManager
+import org.flyhigh.os.Models.LoginUser
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.util.Date
 
 
 class TextFieldViewModel {
 
     var citizenships: Array<String> = emptyArray()
+
+    private val networkManager = NetworkManager.getInstance()
 
     init {
         getListOfCitizenships()
@@ -182,4 +186,19 @@ class TextFieldViewModel {
             _canRegister.value = true
         }
     }
+
+
+
+
+
+
+
+    //NETWORK functions
+    suspend fun login(){
+        val loginData = LoginUser(_loginEmail.value, _loginPassword.value)
+        val json = Json.encodeToString(loginData)
+        networkManager.sendMessage(json)
+    }
+
+
 }

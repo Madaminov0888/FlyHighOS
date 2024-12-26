@@ -3,7 +3,8 @@ package org.flyhigh.os.Managers
 // NetworkManager.kt
 
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.io.PrintWriter
@@ -22,8 +23,8 @@ class NetworkManager private constructor() {
     val connectionState: StateFlow<ConnectionState> = _connectionState
 
     companion object {
-        private const val HOST = "localhost"
-        private const val PORT = 8192
+        private const val HOST = "192.168.17.200"
+        private const val PORT = 65432
         private const val RECONNECT_DELAY = 5000L // 5 seconds
 
         @Volatile
@@ -108,6 +109,7 @@ class NetworkManager private constructor() {
             }
 
             writer?.println(message)
+            print("Message send$message")
             return@withContext reader?.readLine() ?: throw Exception("No response from server")
         } catch (e: Exception) {
             _connectionState.value = ConnectionState.Error(e.message ?: "Unknown error")
