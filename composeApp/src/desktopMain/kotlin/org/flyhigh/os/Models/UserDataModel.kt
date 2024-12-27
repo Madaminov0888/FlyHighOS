@@ -59,3 +59,30 @@ data class RegisterUserDetails(
 ) : RequestDetails
 
 
+
+@Serializable
+data class RepresentativeDetails(
+    @SerialName("email") val email: String,
+    @SerialName("password") val password: String,
+    @SerialName("state") val state: String,
+    @SerialName("name") val name: String,
+    @SerialName("logo") val logo: String?, // Assuming logo is optional
+    @SerialName("contact_number") val contactNumber: String,
+    @SerialName("contact_email") val contactEmail: String,
+    @SerialName("address") val address: String,
+    @SerialName("tin") val tin: String,
+    @SerialName("account_holder_name") val accountHolderName: String,
+    @SerialName("bank_name") val bankName: String,
+    @SerialName("bank_swift_code") val bankSwiftCode: String,
+    @SerialName("bank_account_number") val bankAccountNumber: String,
+    @SerialName("airline_description") val airlineDescription: String
+):RequestDetails
+
+
+@Serializable
+data class RepresentativeData(
+    val representative_id: String,
+    val email: String,
+    val password: String,
+    val state: String
+)

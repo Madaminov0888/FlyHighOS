@@ -75,14 +75,14 @@ class HomeViewModel {
                 listOf(FlightCombination(
                     flightCombinationId = "233",
                     flightsRequestId = "111",
-                    flightsOverallPrice = 3900.0,
+                    flightsOverallPrice = 1900.0,
                     flights =listOf(
                         FlightData(
                             flightId = "FL12345",
                             airlineId = "AIR67890",
                             planeId = "PL123",
                             includesFood = true,
-                            fromAirport = "TAS", // Tashkent airport code
+                            fromAirport = "TJK", // Tashkent airport code
                             startDate = "2024-12-25 07:40", // ISO 8601 format
                             startDateTimeZone = 5, // UTC+5
                             toAirport = "IST", // Istanbul airport code
@@ -134,7 +134,134 @@ class HomeViewModel {
                             state = "Scheduled"
                         )
                     )
-                ))
+                ),
+                    FlightCombination(
+                        flightCombinationId = "233",
+                        flightsRequestId = "111",
+                        flightsOverallPrice = 2300.0,
+                        flights =listOf(
+                            FlightData(
+                                flightId = "FL12345",
+                                airlineId = "AIR67890",
+                                planeId = "PL123",
+                                includesFood = true,
+                                fromAirport = "TAS", // Tashkent airport code
+                                startDate = "2024-12-25 07:40", // ISO 8601 format
+                                startDateTimeZone = 5, // UTC+5
+                                toAirport = "IST", // Istanbul airport code
+                                isInternationalFlight = true,
+                                endDate = "2024-12-25 14:15", // ISO 8601 format
+                                endDateTimeZone = 3, // UTC+3
+                                refund = 0.80, // 80% refund
+                                baggagePerPerson = 20, // 20 kg
+                                carryOnBaggagePerPerson = 7, // 7 kg
+                                isExchangeableForAdditionalFee = true,
+                                state = "Scheduled"
+                            ),
+                            FlightData(
+                                flightId = "FL12346",
+                                airlineId = "AIR67890",
+                                planeId = "PL126",
+                                includesFood = true,
+                                fromAirport = "IST", // Istanbul airport code
+                                startDate = "2024-12-25 15:40", // ISO 8601 format
+                                startDateTimeZone = 3, // UTC+3
+                                toAirport = "JFK", // JFK airport code
+                                isInternationalFlight = true,
+                                endDate = "2024-12-25 21:15", // ISO 8601 format
+                                endDateTimeZone = -5, // UTC-5
+                                refund = 0.75, // 75% refund
+                                baggagePerPerson = 25, // 25 kg
+                                carryOnBaggagePerPerson = 10, // 10 kg
+                                isExchangeableForAdditionalFee = false,
+                                state = "Scheduled"
+                            )
+                        ),
+                        returnFlights = listOf(
+                            FlightData(
+                                flightId = "FL12347",
+                                airlineId = "AIR67890",
+                                planeId = "PL123",
+                                includesFood = true,
+                                fromAirport = "JFK", // JFK airport code
+                                startDate = "2024-12-26 09:40", // ISO 8601 format
+                                startDateTimeZone = -5, // UTC-5
+                                toAirport = "TAS", // Tashkent airport code
+                                isInternationalFlight = true,
+                                endDate = "2024-12-26 21:15", // ISO 8601 format
+                                endDateTimeZone = 5, // UTC+5
+                                refund = 0.90, // 90% refund
+                                baggagePerPerson = 30, // 30 kg
+                                carryOnBaggagePerPerson = 7, // 7 kg
+                                isExchangeableForAdditionalFee = true,
+                                state = "Scheduled"
+                            )
+                        )
+                    ),
+                    FlightCombination(
+                        flightCombinationId = "233",
+                        flightsRequestId = "111",
+                        flightsOverallPrice = 3900.0,
+                        flights =listOf(
+                            FlightData(
+                                flightId = "FL12349",
+                                airlineId = "AIR67890",
+                                planeId = "PL123",
+                                includesFood = true,
+                                fromAirport = "TAS", // Tashkent airport code
+                                startDate = "2024-12-25 07:40", // ISO 8601 format
+                                startDateTimeZone = 5, // UTC+5
+                                toAirport = "DBX", // Istanbul airport code
+                                isInternationalFlight = true,
+                                endDate = "2024-12-25 14:15", // ISO 8601 format
+                                endDateTimeZone = 3, // UTC+3
+                                refund = 0.80, // 80% refund
+                                baggagePerPerson = 20, // 20 kg
+                                carryOnBaggagePerPerson = 7, // 7 kg
+                                isExchangeableForAdditionalFee = true,
+                                state = "Scheduled"
+                            ),
+                            FlightData(
+                                flightId = "FL12347",
+                                airlineId = "AIR67890",
+                                planeId = "PL126",
+                                includesFood = true,
+                                fromAirport = "TSB", // Istanbul airport code
+                                startDate = "2024-12-25 15:40", // ISO 8601 format
+                                startDateTimeZone = 3, // UTC+3
+                                toAirport = "DXB", // JFK airport code
+                                isInternationalFlight = true,
+                                endDate = "2024-12-25 21:15", // ISO 8601 format
+                                endDateTimeZone = -5, // UTC-5
+                                refund = 0.75, // 75% refund
+                                baggagePerPerson = 25, // 25 kg
+                                carryOnBaggagePerPerson = 10, // 10 kg
+                                isExchangeableForAdditionalFee = false,
+                                state = "Scheduled"
+                            )
+                        ),
+                        returnFlights = listOf(
+                            FlightData(
+                                flightId = "FL12347",
+                                airlineId = "AIR67890",
+                                planeId = "PL123",
+                                includesFood = true,
+                                fromAirport = "JFK", // JFK airport code
+                                startDate = "2024-12-26 09:40", // ISO 8601 format
+                                startDateTimeZone = -5, // UTC-5
+                                toAirport = "TAS", // Tashkent airport code
+                                isInternationalFlight = true,
+                                endDate = "2024-12-26 21:15", // ISO 8601 format
+                                endDateTimeZone = 5, // UTC+5
+                                refund = 0.90, // 90% refund
+                                baggagePerPerson = 30, // 30 kg
+                                carryOnBaggagePerPerson = 7, // 7 kg
+                                isExchangeableForAdditionalFee = true,
+                                state = "Scheduled"
+                            )
+                        )
+                    )
+                )
             )
         )
 

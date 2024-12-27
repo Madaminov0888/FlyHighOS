@@ -66,11 +66,11 @@ fun App() {
             }
 
             composable(route = "adminHome") {
-                AdminHomeView(adminHomeVM)
+                AdminHomeView(adminHomeVM, navController)
             }
 
             composable(route = "representativeAuth") {
-                RepresentativeAuthView(navController)
+                RepresentativeAuthView(navController, networkManager)
             }
 
 

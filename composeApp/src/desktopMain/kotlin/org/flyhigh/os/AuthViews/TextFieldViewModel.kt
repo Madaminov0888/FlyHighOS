@@ -4,7 +4,6 @@ package org.example.project.AuthViews
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.serialization.Serializable
-import org.flyhigh.os.Managers.NetworkManager
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -13,7 +12,6 @@ class TextFieldViewModel {
 
     var citizenships: Array<String> = emptyArray()
 
-    private val networkManager = NetworkManager.getInstance()
 
     init {
         getListOfCitizenships()

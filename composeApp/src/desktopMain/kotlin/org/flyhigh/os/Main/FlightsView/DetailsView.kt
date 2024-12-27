@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import org.flyhigh.os.AuthViews.DefaultRowView
 import org.flyhigh.os.Components.BackButton
 import org.flyhigh.os.Components.PrimaryButton
 import org.flyhigh.os.Models.FlightCombination
@@ -37,12 +38,14 @@ fun DetailsView(flightCombination: FlightCombination, navController: NavControll
                 ) {
                     // Header Text
                     item {
-                        Text(
-                            text = "Flight Details",
-                            fontWeight = FontWeight.SemiBold,
-                            fontSize = 25.sp,
-                            modifier = Modifier.padding(bottom = 8.dp)
-                        )
+                        DefaultRowView {
+                            Text(
+                                text = "Flight Details",
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 25.sp,
+                                modifier = Modifier.padding(bottom = 8.dp)
+                            )
+                        }
                     }
 
                     this.items(flightCombination.flights) { flight ->
