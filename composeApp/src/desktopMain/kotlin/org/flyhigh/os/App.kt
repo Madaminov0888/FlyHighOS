@@ -24,7 +24,10 @@ import org.flyhigh.os.Main.ProfilePage.ProfileViewModel
 import org.flyhigh.os.Managers.NetworkManager
 import org.flyhigh.os.Models.FlightCombination
 import org.flyhigh.os.RepresentativePanel.Auth.RepresentativeAuthView
+import org.flyhigh.os.RepresentativePanel.Main.AddFlightsView
+import org.flyhigh.os.RepresentativePanel.Main.CompanyView
 import org.flyhigh.os.RepresentativePanel.Main.RepresentativeHomeView
+import org.flyhigh.os.RepresentativePanel.Main.RepresentativeHomeViewModel
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
@@ -39,6 +42,7 @@ fun App() {
         val detailsVM = DetailsViewModel()
         val seatVM = SeatPlacesViewModel()
         val paymentVM = PaymentViewModel()
+        val representativeHomeVM = RepresentativeHomeViewModel()
 
         val networkManager = NetworkManager.getInstance()
 
@@ -69,9 +73,6 @@ fun App() {
                 RepresentativeAuthView(navController)
             }
 
-            composable(route = "representativeHome") {
-                RepresentativeHomeView(navController)
-            }
 
             composable(route = "getFlights") {
                 FlightsView(navController, homeVM)
@@ -110,6 +111,20 @@ fun App() {
                 if (flightCombination != null && sbjString != null) {
                     PaymentView(homeVM, paymentVM, flightCombination, selectedSeats = sbjString, navController)
                 }
+            }
+
+
+            //Representative Views
+            composable(route = "representativeHome") {
+                RepresentativeHomeView(representativeHomeVM,navController)
+            }
+
+            composable(route = "company") {
+                CompanyView(representativeHomeVM, navController)
+            }
+
+            composable(route = "addFlight") {
+                AddFlightsView(vm = representativeHomeVM, navController)
             }
         }
     }

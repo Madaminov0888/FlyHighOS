@@ -3,7 +3,6 @@ package org.flyhigh.os.AuthViews
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.mouseClickable
 import androidx.compose.foundation.onClick
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -11,11 +10,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.isSecondaryPressed
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.flow.StateFlow
@@ -92,6 +89,36 @@ fun TextFieldBoxes(text: StateFlow<String>, title: String, action: (txt: String)
         )
     }
 }
+
+
+
+
+
+@Composable
+fun TextFieldBoxes2(text: String, title: String, action: (txt: String)->Unit, readOnly: Boolean = false, widthMin: Dp = 400.dp, widthMax: Dp = 450.dp) {
+    MaterialTheme {
+//        val textValue by text.collectAsState()
+
+        TextField(value = text, onValueChange = {newText -> action(newText)}, label = {
+            Text(title)
+        }, modifier = Modifier
+            .padding()
+            .widthIn(widthMin, widthMax)
+            ,
+            colors = TextFieldDefaults.textFieldColors(
+                focusedLabelColor = Color.Black,
+                focusedIndicatorColor = Color.Black,
+                backgroundColor = Color.White,
+                disabledTextColor = Color.Black,
+                disabledLabelColor = Color.DarkGray
+            ),
+            singleLine = true,
+            readOnly = readOnly,
+            enabled = !readOnly
+        )
+    }
+}
+
 
 
 

@@ -30,13 +30,13 @@ fun RepresentativeRegisterPage(vm: RepresentativeAuthViewModel) {
             TextFieldBoxes(
                 text = vm.firstName,
                 title = "First Name",
-                action = {str -> vm.updateFirstName(str)}
+                action = { str -> vm.updateFirstName(str)}
             )
 
             TextFieldBoxes(
                 text = vm.lastName,
                 title = "Last Name",
-                action = {str -> vm.updateLastName(str)}
+                action = { str -> vm.updateLastName(str)}
             )
         }
 
@@ -44,13 +44,13 @@ fun RepresentativeRegisterPage(vm: RepresentativeAuthViewModel) {
             TextFieldBoxes(
                 text = vm.email,
                 title = "Email of Representative",
-                action = {str -> vm.updateEmail(str)}
+                action = { str -> vm.updateEmail(str)}
             )
 
             TextFieldBoxes(
                 text = vm.password,
                 title = "Password",
-                action = {str -> vm.updatePassword(str)}
+                action = { str -> vm.updatePassword(str)}
             )
         }
 

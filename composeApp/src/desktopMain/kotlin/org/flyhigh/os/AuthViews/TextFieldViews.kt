@@ -21,10 +21,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import kotlinx.coroutines.*
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.encodeToJsonElement
 import org.flyhigh.os.Components.PrimaryButton
 import org.flyhigh.os.Managers.NetworkManager
+import org.flyhigh.os.Models.LoginResponseModel
+import org.flyhigh.os.Models.RegisterUserDetails
+import org.flyhigh.os.Models.RequestModel
+import org.flyhigh.os.Models.ResponseModel
+import org.flyhigh.os.TOKEN
 
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -134,19 +139,31 @@ fun TextFieldViews(vm: TextFieldViewModel = TextFieldViewModel(), navController:
                             textColor = Color.White,
                             disabled = !canRegister,
                             onClick = {
-                                navController.navigate(route = "home")
-                            })
-                    } else {
-                        PrimaryButton(
-                            text = "Login",
-                            backgroundColor = Color.Black,
-                            textColor = Color.White,
-                            disabled = !canLogin,
-                            onClick = {
+//                                navController.navigate(route = "home")
                                 scope.launch {
                                     try {
-                                        val loginData = UserLogin(login = vm.loginEmail.value, password = vm.loginPassword.value)
-                                        val loginJson = Json.encodeToString(loginData)
+                                        val registerData = RegisterUserDetails(
+                                            email = vm.email.value,
+                                            password = vm.password.value,
+                                            firstName = vm.firstName.value,
+                                            lastName = vm.lastName.value,
+                                            phoneNumber = vm.phoneNumber.value,
+                                            birthdate = vm.dateOfBirth.value,
+                                            passport = vm.idCard.value,
+                                            foreignPassport = vm.foreignPassId.value,
+                                            citizenship = vm.citizenship.value,
+                                            addressCountry = vm.country.value,
+                                            addressCity = vm.city.value,
+                                            addressState = vm.state.value,
+                                            addressLine1 = vm.address.value,
+                                            addressLine2 = vm.address2.value
+                                        )
+                                        val requestModel = RequestModel<RegisterUserDetails>(
+                                            request = "register-user",
+                                            authorization = null,
+                                            details = registerData
+                                        )
+                                        val loginJson = Json.encodeToJsonElement(requestModel)
 
                                         networkManager.sendMessage(loginJson)
                                         var response: String? = null
@@ -163,9 +180,59 @@ fun TextFieldViews(vm: TextFieldViewModel = TextFieldViewModel(), navController:
                                             }
                                         }
 
-                                        if (response?.contains("success") == true) {
-                                            withContext(Dispatchers.Main) {
-                                                navController.navigate(route = "home")
+                                        if (response?.contains("OK") == true) {
+                                            val cleanedResponse = response.trimStart { it != '{' && it != '[' }
+                                            val responseData = Json.decodeFromString<ResponseModel<LoginResponseModel>>(cleanedResponse)
+                                            withContext(Dispatchers.IO) {
+                                                TOKEN.userToken = responseData.result.token
+                                                navController.navigate("home")
+                                            }
+                                        } else {
+                                            println("Login failed: $response")
+                                        }
+                                    } catch (e: Exception) {
+                                        println("Error during login: ${e.message}")
+                                    }
+                                }
+                            })
+                    } else {
+                        PrimaryButton(
+                            text = "Login",
+                            backgroundColor = Color.Black,
+                            textColor = Color.White,
+                            disabled = !canLogin,
+                            onClick = {
+                                scope.launch {
+                                    try {
+                                        val loginData = UserLogin(email = vm.loginEmail.value, password = vm.loginPassword.value)
+                                        val requestModel = RequestModel<UserLogin>(
+                                            request = "login-user",
+                                            authorization = null,
+                                            details = loginData
+                                        )
+                                        val loginJson = Json.encodeToJsonElement(requestModel)
+
+                                        networkManager.sendMessage(loginJson)
+                                        var response: String? = null
+                                        var retryCount = 0
+
+                                        while (response == null && retryCount < 3) {
+                                            response = networkManager.readMessage()
+                                            if (response == null) {
+                                                networkManager.close()
+                                                networkManager.connect()
+                                                networkManager.sendMessage(loginJson) // Resend login data
+                                                retryCount++
+                                                delay(1000)
+                                            }
+                                        }
+
+                                        if (response?.contains("OK") == true) {
+                                            val cleanedResponse = response!!.trimStart { it != '{' && it != '[' }
+                                            val responseData = Json.decodeFromString<ResponseModel<LoginResponseModel>>(cleanedResponse)
+                                            TOKEN.userToken = responseData.result.token
+                                            withContext(Dispatchers.IO) {
+                                                navController.navigate("home")
                                             }
                                         } else {
                                             println("Login failed: $response")

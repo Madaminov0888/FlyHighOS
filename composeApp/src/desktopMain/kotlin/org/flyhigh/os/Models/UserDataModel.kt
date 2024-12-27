@@ -27,4 +27,35 @@ data class User(
 data class LoginUser(
     val email: String,
     val password: String
+):RequestDetails
+
+
+interface RequestDetails
+
+@Serializable
+data class RequestModel<T>(
+    val request: String,
+    val authorization: String?,
+    val details: T
 )
+
+
+@Serializable
+data class RegisterUserDetails(
+    val email: String,
+    val password: String,
+    @SerialName("first_name") val firstName: String,
+    @SerialName("last_name") val lastName: String,
+    @SerialName("phone_number") val phoneNumber: String,
+    val birthdate: String,
+    val passport: String,
+    @SerialName("foreign_passport") val foreignPassport: String?,
+    val citizenship: String,
+    @SerialName("address_country") val addressCountry: String,
+    @SerialName("address_city") val addressCity: String,
+    @SerialName("address_state") val addressState: String,
+    @SerialName("address_line_1") val addressLine1: String,
+    @SerialName("address_line_2") val addressLine2: String?
+) : RequestDetails
+
+

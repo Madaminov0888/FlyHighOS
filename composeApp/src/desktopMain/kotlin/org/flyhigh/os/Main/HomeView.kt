@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,9 +25,15 @@ import org.flyhigh.os.AuthViews.TextFieldBoxes
 import org.flyhigh.os.AuthViews.WheelDatePickerBottomSheet
 import org.flyhigh.os.Components.CSColors
 import org.flyhigh.os.Components.PrimaryButton
+import org.flyhigh.os.TOKEN
 
 @Composable
 fun HomeView(vm: HomeViewModel, navController: NavController) {
+    LaunchedEffect(Unit) {
+        println(TOKEN.userToken)
+    }
+
+
     MaterialTheme {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Column(modifier = Modifier.fillMaxSize()) {

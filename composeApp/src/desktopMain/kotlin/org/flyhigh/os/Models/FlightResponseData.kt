@@ -43,3 +43,11 @@ data class FlightData(
     @SerialName("is_exchangeable_for_additional_fee") val isExchangeableForAdditionalFee: Boolean,
     @SerialName("state") val state: String
 )
+
+
+
+@Serializable
+data class RepresentativeFlight(
+    val status: String,
+    val result: FlightData
+)

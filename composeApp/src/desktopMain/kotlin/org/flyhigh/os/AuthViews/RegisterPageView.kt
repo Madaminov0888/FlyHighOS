@@ -1,18 +1,20 @@
 package org.example.project.AuthViews
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.onClick
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import org.flyhigh.os.AuthViews.CursorDropDownMenu
 import org.flyhigh.os.AuthViews.DefaultRowView
 import org.flyhigh.os.AuthViews.TextFieldBoxes
 import org.flyhigh.os.AuthViews.WheelDatePickerBottomSheet
+
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -30,13 +32,13 @@ fun RegisterView(vm: TextFieldViewModel) {
             TextFieldBoxes(
                 text = vm.firstName,
                 title = "First Name",
-                action = {str -> vm.updateFirstName(str)}
+                action = { str -> vm.updateFirstName(str)}
             )
 
             TextFieldBoxes(
                 text = vm.lastName,
                 title = "Last Name",
-                action = {str -> vm.updateLastName(str)}
+                action = { str -> vm.updateLastName(str)}
             )
         }
 
@@ -44,13 +46,13 @@ fun RegisterView(vm: TextFieldViewModel) {
             TextFieldBoxes(
                 text = vm.email,
                 title = "Email",
-                action = {str -> vm.updateEmail(str)}
+                action = { str -> vm.updateEmail(str)}
             )
 
             TextFieldBoxes(
                 text = vm.password,
                 title = "Password",
-                action = {str -> vm.updatePassword(str)}
+                action = { str -> vm.updatePassword(str)}
             )
         }
 
@@ -58,7 +60,7 @@ fun RegisterView(vm: TextFieldViewModel) {
             TextFieldBoxes(
                 text = vm.phoneNumber,
                 title = "Phone Number",
-                action = {str -> vm.updatePhoneNumber(str)}
+                action = { str -> vm.updatePhoneNumber(str)}
             )
 
             WheelDatePickerBottomSheet(onDateSelected = { date ->

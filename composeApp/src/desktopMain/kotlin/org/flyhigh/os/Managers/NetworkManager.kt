@@ -5,6 +5,7 @@ package org.flyhigh.os.Managers
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.JsonElement
 import java.io.DataInputStream
 import java.io.IOException
 import java.io.PrintWriter
@@ -17,7 +18,7 @@ class NetworkManager private constructor() {
     private var output: PrintWriter? = null
 
     companion object {
-        var ip: String = "192.168.17.85"
+        var ip: String = "192.168.17.200"
         var port: Int = 8111
         @Volatile
         private var INSTANCE: NetworkManager? = null
@@ -45,7 +46,7 @@ class NetworkManager private constructor() {
         }
     }
 
-    suspend fun sendMessage(message: String) = withContext(Dispatchers.IO) {
+    suspend fun sendMessage(message: JsonElement) = withContext(Dispatchers.IO) {
         try {
             output?.println("$message\n")
             output?.flush()
